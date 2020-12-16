@@ -1,23 +1,38 @@
-import logo from './logo.svg';
+import StockCard from './components/StockCard';
+import Dashboard from './container/Dashboard';
 import './App.css';
+import { useAuth } from './context/use-auth'
+import Landpage from './container/Landpage';
+import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
+import Nav from './components/Nav';
+import { useEffect } from 'react';
 
 function App() {
+  let auth = useAuth()
+
+  useEffect(() => {
+    (() => {
+      auth.signInFromToken()
+      console.log(auth.user)
+    })();
+  }, [])
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      {console.log(auth.user)}
+      <Router>
+      <Nav/>
+      <Switch>
+      <Route exact path="/">
+      <Landpage/>
+      </Route>
+      <Route exact path ="/stocks/:id">
+      <StockCard/>
+      </Route>
+      <Route exact path="/dash">
+      <Dashboard/>
+      </Route>
+      </Switch>
+      </Router>
     </div>
   );
 }

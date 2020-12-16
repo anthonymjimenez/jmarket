@@ -1,0 +1,51 @@
+{
+    "stocks": [
+        {
+            "symbol" : "CHWY",
+            "name" : "Chewy",
+            "currentPrice": 76,
+            "YTDreturns": 34
+        },
+        {
+            "symbol" : "APPL",
+            "name" : "Apple",
+            "currentPrice": 1176,
+            "YTDreturns": 134
+        },
+        {
+            "symbol" : "F",
+            "name" : "Ford",
+            "currentPrice": 7,
+            "YTDreturns": 3
+        }
+    ],
+    "transactions": [
+
+    ],
+    "userOwns": [
+        {
+            "symbol": "CHWY",
+            "averageCost": 65,
+            "sharesOwned": 2,
+            "totalCost": 130,
+            "userId": 1
+        },
+        {
+            "symbol": "APPL",
+            "averageCost": 200,
+            "sharesOwned": 3,
+            "totalCost": 600,
+            "userId": 1
+        }
+    ],
+    "users": [
+        {
+            "name": "Anty",
+            "username": "Antspice",
+            "balance": 123,
+            "totalInvested": 300,
+            "totalCapital": 423,
+            "id": 1
+        }
+    ]
+}
