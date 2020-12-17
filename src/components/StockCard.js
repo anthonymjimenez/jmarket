@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useAuth } from "../context/use-auth";
 import { useLocation } from "react-router-dom";
 import { isoId } from "../utils/utils";
+import StockForm from "./StockForm";
 
 function StockCard() {
   let auth = useAuth();
@@ -27,8 +28,12 @@ function StockCard() {
           {stock.user_owned_stocks.length == 1 ? (
             <>
               <h3>Owned Shares: {userData.sharesOwned}</h3>
+              <StockForm auth ={auth} stock_id = {stock.id} userOwned={true}/>
             </>
-          ) : null}
+          ) : <StockForm auth ={auth} stock_id = {stock.id} userOwned={false}/>
+          }
+            <hr />
+
         </>
       ) : (
         <h1>Loading...</h1>

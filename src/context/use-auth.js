@@ -26,17 +26,6 @@ function useProvideAuth() {
   const [user, setUser] = useState(null);
   const [stocks, setStocks] = useState(null);
 
-  const fetchStocks = async (id) => {
-    let s = await fetch("http://localhost:3000/api/v1/stocks");
-    let stocks = await s.json();
-   return stocks.map((s) => {
-      let userData = s.user_owned_stocks.filter((stock) => stock.user_id == id
-      );
-      s.user_owned_stocks = userData
-      return s;
-    });
-  };
-
   const signin = (state) => {
     fetch(`http://localhost:3000/api/v1/login`, {
       method: "POST",
@@ -137,6 +126,51 @@ function useProvideAuth() {
     setUser(false);
   };
 
+// create use-stocks? 
+  const fetchStocks = async (id) => {
+    let s = await fetch("http://localhost:3000/api/v1/stocks");
+    let stocks = await s.json();
+   return stocks.map((s) => {
+      let userData = s.user_owned_stocks.filter((stock) => stock.user_id == id
+      );
+      s.user_owned_stocks = userData
+      return s;
+    });
+  };
+
+
+  const buyStock = (state) => {
+    let resp = await fetch(`http://localhost:3000/api/v1/buystock`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Accept: "application/json",
+      },
+      body: JSON.stringify({ id: token }),
+    });
+  }
+
+  const sellStock = () => {
+    let resp = await fetch(`http://localhost:3000/api/v1/sellstock`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Accept: "application/json",
+      },
+      body: JSON.stringify({ id: token }),
+    });
+  }
+
+  const createStock = (state) => {
+    let resp = await fetch(`http://localhost:3000/api/v1/user_owned_stocks`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Accept: "application/json",
+      },
+      body: JSON.stringify({ id: token }),
+    });
+  }
   // Subscribe to user on mount
 
   // Because this sets state in the callback it will cause any ...
@@ -155,7 +189,9 @@ function useProvideAuth() {
   return {
     user,
     stocks,
-    fetchStocks,
+    buyStock,
+    sellStock,
+    createStock,
     signin,
     signup,
     signout,
