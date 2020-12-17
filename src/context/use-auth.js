@@ -139,38 +139,50 @@ function useProvideAuth() {
   };
 
 
-  const buyStock = (state) => {
+  const buyStock = async (state) => {
     let resp = await fetch(`http://localhost:3000/api/v1/buystock`, {
-      method: "POST",
+      method: "PUT",
       headers: {
         "Content-Type": "application/json",
         Accept: "application/json",
       },
-      body: JSON.stringify({ id: token }),
+      body: JSON.stringify({ user_stock_id: state.user_stock_id, sharesBought: parseFloat(state.shares) }),
     });
-  }
+    let userData = await resp.json()
+    console.log(userData)
+   }
 
-  const sellStock = () => {
+  const sellStock = async (state) => {
+    console.log('gello')
     let resp = await fetch(`http://localhost:3000/api/v1/sellstock`, {
-      method: "POST",
+      method: "PUT",
       headers: {
         "Content-Type": "application/json",
         Accept: "application/json",
       },
-      body: JSON.stringify({ id: token }),
+      body: JSON.stringify({ user_stock_id: state.user_stock_id, sharesSold: parseFloat(state.shares) }),
     });
+    let userData = await resp.json();
+    console.log(userData)
   }
 
-  const createStock = (state) => {
+  const createStock = async (state) => {
     let resp = await fetch(`http://localhost:3000/api/v1/user_owned_stocks`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
         Accept: "application/json",
       },
-      body: JSON.stringify({ id: token }),
-    });
-  }
+      body: JSON.stringify({ user: state.user_id, stock: state.stock_id, sharesOwned: parseFloat(state.shares) }), 
+    })
+      let userData = await resp.json();
+      console.log(userData)
+    };
+  
+    const updateStock = () => { 
+      // frontend update stock
+    }
+  
   // Subscribe to user on mount
 
   // Because this sets state in the callback it will cause any ...

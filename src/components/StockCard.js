@@ -28,7 +28,7 @@ function StockCard() {
           {stock.user_owned_stocks.length == 1 ? (
             <>
               <h3>Owned Shares: {userData.sharesOwned}</h3>
-              <StockForm auth ={auth} stock_id = {stock.id} userOwned={true}/>
+              <StockForm auth ={auth} stock_id = {stock.id} user_stock_id ={userData.id} userOwned={true}/>
             </>
           ) : <StockForm auth ={auth} stock_id = {stock.id} userOwned={false}/>
           }

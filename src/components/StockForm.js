@@ -1,12 +1,13 @@
 import React, { useState, useEffect } from "react";
 import { financial } from '../utils/utils'
 
-export default function StockForm({ auth, stock_id, userOwned}) {
+export default function StockForm({ auth, stock_id, user_stock_id=-1, userOwned}) {
   const [state, setState] = useState({
     shares: 0.001,
     type: "buy",
     user_id: auth.user?.id,
-    stock_id: stock_id
+    stock_id: stock_id,
+    user_stock_id: user_stock_id
   });
 
   const handleChange = (e) => {
