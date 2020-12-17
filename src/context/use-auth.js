@@ -38,23 +38,12 @@ function useProvideAuth() {
       .then((r) => r.json())
       .then((data) => {
         console.log(data);
-        // localStorage.setItem("token", data.id);
+        localStorage.setItem("id", data.user.id);
         setUser(data.user);
       })
       .catch(console.error);
   };
 
-  const updateBalance = (data) => {
-    setUser((user) => {
-      return { ...user, balance: user.balance - data.transaction.total_price };
-    });
-  };
-
-  const updateCryptos = (data) => {
-    setUser((user) => {
-      return { ...user, cryptos: data.cryptos };
-    });
-  };
   // updatecrypto function ? like update balance but replace user crypto
   const signup = (state) => {
     console.log(state);
@@ -69,7 +58,7 @@ function useProvideAuth() {
       .then((resp) => resp.json())
       .then((data) => {
         console.log(data);
-        if (data.user.id) localStorage.setItem("token", data.user.id);
+        if (data.user.id) localStorage.setItem("id", data.user.id);
         setUser(data.user);
       })
       .catch(console.error);
@@ -109,7 +98,7 @@ function useProvideAuth() {
   // };
 
   const deleteUser = async () => {
-    const token = localStorage.getItem("token"); // set user with token if(token & user=dne) <- that means token was set and page has been reset, in that case use token to fetch user
+    const token = localStorage.getItem("id"); // set user with token if(token & user=dne) <- that means token was set and page has been reset, in that case use token to fetch user
 
     let resp = await fetch(`http://localhost:3000/api/v1/users/${user.id}`, {
       headers: {
@@ -153,7 +142,6 @@ function useProvideAuth() {
    }
 
   const sellStock = async (state) => {
-    console.log('gello')
     let resp = await fetch(`http://localhost:3000/api/v1/sellstock`, {
       method: "PUT",
       headers: {
@@ -208,8 +196,6 @@ function useProvideAuth() {
     signup,
     signout,
     signInFromToken,
-    updateBalance,
-    deleteUser,
-    updateCryptos,
+    deleteUser
   };
 }

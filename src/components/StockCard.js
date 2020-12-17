@@ -25,7 +25,7 @@ function StockCard() {
           <h3>Year High: {stock.yearHigh} </h3>
           <h3>Year Low: {stock.yearLow} </h3>
           <hr />
-          {stock.user_owned_stocks.length == 1 ? (
+          {userData ? (
             <>
               <h3>Owned Shares: {userData.sharesOwned}</h3>
               <StockForm auth ={auth} stock_id = {stock.id} user_stock_id ={userData.id} userOwned={true}/>
