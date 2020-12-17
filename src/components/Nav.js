@@ -1,7 +1,7 @@
 import { Link } from "react-router-dom";
 import { NavLink } from "react-router-dom";
 
-function Nav({user}) {
+function Nav() {
   
   return (
     <nav>

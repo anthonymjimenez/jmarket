@@ -13,13 +13,15 @@ function App() {
   useEffect(() => {
     (() => {
       auth.signInFromToken()
-      console.log(auth.user)
     })();
   }, [])
+
   return (
     <div className="App">
       {console.log(auth.user)}
+      {console.log(auth.stocks)}
       <Router>
+      <h1>{auth.user?.name}</h1>
       <Nav/>
       <Switch>
       <Route exact path="/">
