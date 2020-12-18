@@ -27,19 +27,21 @@ function useProvideAuth() {
   const [stocks, setStocks] = useState(null);
 
   const signin = (state) => {
+    console.log(state);
     fetch(`http://localhost:3000/api/v1/login`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
         Accept: "application/json",
       },
-      body: JSON.stringify({ user: state }),
+      body: JSON.stringify({ ...state }),
     })
       .then((r) => r.json())
       .then((data) => {
         console.log(data);
         localStorage.setItem("id", data.user.id);
-        setUser(data.user);
+        setUser(data.user.id);
+        setStocks(fetchStocks(data.user.id));
       })
       .catch(console.error);
   };
@@ -60,11 +62,13 @@ function useProvideAuth() {
         console.log(data);
         if (data.user.id) localStorage.setItem("id", data.user.id);
         setUser(data.user);
+        setStocks(fetchStocks(data.user.id));
       })
       .catch(console.error);
   }; //appendUserInfo
 
   const signInFromToken = async () => {
+    console.log("hello");
     const token = localStorage.getItem("id"); // set user with token if(token & user=dne) <- that means token was set and page has been reset, in that case use token to fetch user
     // use auth routes to restrict all routes before token is set, then use token to render user
     if (token) {
@@ -77,9 +81,13 @@ function useProvideAuth() {
         body: JSON.stringify({ id: token }),
       });
       let data = await resp.json();
-      console.log(data);
-      setUser(await data);
-      setStocks(await fetchStocks(data.id))
+      if (data.errors) {
+        console.log(data.errors);
+        localStorage.removeItem("id");
+      } else {
+        setUser(await data);
+        setStocks(await fetchStocks(data.id));
+      }
     }
   };
 
@@ -98,7 +106,7 @@ function useProvideAuth() {
   // };
 
   const deleteUser = async () => {
-    const token = localStorage.getItem("id"); // set user with token if(token & user=dne) <- that means token was set and page has been reset, in that case use token to fetch user
+    // const token = localStorage.getItem("id"); // set user with token if(token & user=dne) <- that means token was set and page has been reset, in that case use token to fetch user
 
     let resp = await fetch(`http://localhost:3000/api/v1/users/${user.id}`, {
       headers: {
@@ -115,18 +123,77 @@ function useProvideAuth() {
     setUser(false);
   };
 
-// create use-stocks? 
+  const removeUserStock = (stock_id, userData_id) => {
+    console.log(stock_id, userData_id)
+    let copyUser = user;
+    console.log(copyUser.stocks.findIndex(s => s.id == stock_id))
+    copyUser.stocks.map((s) => console.log(s.id));
+
+    copyUser.stocks = copyUser.stocks.filter((s) => s.id == stock_id);
+    copyUser.user_owned_stocks = copyUser.user_owned_stocks.filter(
+      (s) => s.id == userData_id
+    );
+
+    let copyStocks = stocks.map((s) => {
+      if (s.id == stock_id) {
+        s.user_owned_stocks.length = 0;
+      }
+      return s;
+    });
+  
+    console.log(copyStocks, copyUser)
+    setStocks(copyStocks);
+    setUser(copyUser);
+  };
+
+  const updateUser = ({ stock, user: newUser, ...userStockData }) => {
+    // frontend update stock
+    console.log(newUser);
+    let copyUser = user;
+    let userStockIndex = copyUser.stocks.findIndex((s) => s.id == stock.id);
+    let userStockDataIndex = copyUser.user_owned_stocks.findIndex(
+      (s) => s.id == userStockData.id
+    );
+    console.log(userStockIndex, userStockDataIndex)
+    if(userStockIndex !== -1) {
+    copyUser.stocks[userStockIndex] = stock;
+    copyUser.user_owned_stocks[userStockDataIndex] = userStockData;
+    }else {
+      console.log('egllo')
+      copyUser.stocks[copyUser.stocks.length] = stock
+      copyUser.user_owned_stocks[copyUser.user_owned_stocks.length] = userStockData
+    }
+
+    let tempUser = {
+      stocks: copyUser.stocks,
+      user_owned_stocks: copyUser.user_owned_stocks,
+      ...newUser,
+    };
+
+    setUser(tempUser);
+  };
+
+  // create use-stocks?
+  const updateStock = ({ stock, user: newUser, ...userStockData }) => {
+    console.log(stock, newUser, userStockData);
+    let copyStocks = stocks;
+    let stockIndex = copyStocks.findIndex((s) => s.id == stock.id);
+    copyStocks[stockIndex].user_owned_stocks[0] = userStockData;
+
+    setStocks(copyStocks);
+
+    console.log(stocks);
+  };
+
   const fetchStocks = async (id) => {
     let s = await fetch("http://localhost:3000/api/v1/stocks");
     let stocks = await s.json();
-   return stocks.map((s) => {
-      let userData = s.user_owned_stocks.filter((stock) => stock.user_id == id
-      );
-      s.user_owned_stocks = userData
+    return stocks.map((s) => {
+      let userData = s.user_owned_stocks.filter((stock) => stock.user_id == id);
+      s.user_owned_stocks = userData;
       return s;
     });
   };
-
 
   const buyStock = async (state) => {
     let resp = await fetch(`http://localhost:3000/api/v1/buystock`, {
@@ -135,11 +202,16 @@ function useProvideAuth() {
         "Content-Type": "application/json",
         Accept: "application/json",
       },
-      body: JSON.stringify({ user_stock_id: state.user_stock_id, sharesBought: parseFloat(state.shares) }),
+      body: JSON.stringify({
+        user_stock_id: state.user_stock_id,
+        sharesBought: parseFloat(state.shares),
+      }),
     });
-    let userData = await resp.json()
-    console.log(userData)
-   }
+    let userData = await resp.json();
+    console.log(userData);
+    updateUser(userData);
+    updateStock(userData);
+  };
 
   const sellStock = async (state) => {
     let resp = await fetch(`http://localhost:3000/api/v1/sellstock`, {
@@ -148,11 +220,21 @@ function useProvideAuth() {
         "Content-Type": "application/json",
         Accept: "application/json",
       },
-      body: JSON.stringify({ user_stock_id: state.user_stock_id, sharesSold: parseFloat(state.shares) }),
+      body: JSON.stringify({
+        user_stock_id: state.user_stock_id,
+        sharesSold: parseFloat(state.shares),
+      }),
     });
     let userData = await resp.json();
-    console.log(userData)
-  }
+    if(userData.deleted) {
+      console.log('yo')
+      removeUserStock(state.stock_id, state.user_stock_id)
+    }
+    else {
+    console.log(userData);
+    updateUser(userData);
+    updateStock(userData);
+  }};
 
   const createStock = async (state) => {
     let resp = await fetch(`http://localhost:3000/api/v1/user_owned_stocks`, {
@@ -161,16 +243,26 @@ function useProvideAuth() {
         "Content-Type": "application/json",
         Accept: "application/json",
       },
-      body: JSON.stringify({ user: state.user_id, stock: state.stock_id, sharesOwned: parseFloat(state.shares) }), 
-    })
-      let userData = await resp.json();
-      console.log(userData)
-    };
-  
-    const updateStock = () => { 
-      // frontend update stock
-    }
-  
+      body: JSON.stringify({
+        user: state.user_id,
+        stock: state.stock_id,
+        sharesOwned: parseFloat(state.shares),
+      }),
+    });
+    let userData = await resp.json();
+    console.log(userData);
+    addNewStock(userData);
+    // updateUser(userData)
+    // updateStock(userData)
+  };
+
+  const addNewStock = ({ user_owned_stock }) => {
+    console.log(user_owned_stock);
+    // add here still call updateStock()
+    updateUser(user_owned_stock);
+    updateStock(user_owned_stock);
+  };
+
   // Subscribe to user on mount
 
   // Because this sets state in the callback it will cause any ...
@@ -181,7 +273,7 @@ function useProvideAuth() {
 
   useEffect(() => {
     (() => (user ? setUser(user) : setUser(false)))();
-    (() => (stocks ? setStocks(stocks) : setStocks(false)))()
+    (() => (stocks ? setStocks(stocks) : setStocks(false)))();
   }, []);
 
   // Return the user object and auth methods
@@ -196,6 +288,6 @@ function useProvideAuth() {
     signup,
     signout,
     signInFromToken,
-    deleteUser
+    deleteUser,
   };
 }

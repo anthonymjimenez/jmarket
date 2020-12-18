@@ -1,16 +1,15 @@
 import React, { useState, useEffect } from "react";
 import { financial } from '../utils/utils'
 
-export default function StockForm({ auth, stock_id, user_stock_id=-1, userOwned}) {
+export default function StockForm({ auth, stock_id, user_stock_id=null, userOwned}) {
   const [state, setState] = useState({
     shares: 0.001,
     type: "buy",
-    user_id: auth.user?.id,
-    stock_id: stock_id,
     user_stock_id: user_stock_id
   });
 
   const handleChange = (e) => {
+    console.log(state)
     let val = e.target.value;
     if (e.target.placeholder === "type") {
       val = e.target.checked ? "buy" : "sell";
@@ -20,11 +19,12 @@ export default function StockForm({ auth, stock_id, user_stock_id=-1, userOwned}
 
   const handleSubmit = (e) => {
     e.preventDefault();
+    let finalState = {...state, stock_id: stock_id, user_id: auth.user.id}
     if(userOwned) {
-    (state.type == 'buy') ? auth.buyStock(state) : auth.sellStock(state)
+    (state.type == 'buy') ? auth.buyStock(finalState) : auth.sellStock(finalState)
     } else {
         console.log('hello')
-        auth.createStock(state)
+        auth.createStock(finalState)
     }
 
     // if (state.size * state.crypto.price > user.balance) {
@@ -53,6 +53,7 @@ export default function StockForm({ auth, stock_id, user_stock_id=-1, userOwned}
 
   return (
     <div>
+      {console.log(state)}
       <h1>Purchase</h1>
       <form className="ui form" onSubmit={handleSubmit}>
         <div className="field">

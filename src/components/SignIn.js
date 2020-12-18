@@ -3,7 +3,7 @@ import { useAuth } from '../context/use-auth';
 
 export default function SignIn() {
     const auth = useAuth()
-    const [state, setState] = useState({username: "", password: ""})
+    const [state, setState] = useState({username: "", pass: ""})
 
     const handleChange = (e) => {
         setState({...state, [e.target.placeholder]: e.target.value})
@@ -12,7 +12,7 @@ export default function SignIn() {
     const handleSubmit = (e) => {
         e.preventDefault()
         console.log(auth)
-        // auth.signin(state)
+        auth.signin(state)
     }
 
     // make css
@@ -32,7 +32,7 @@ export default function SignIn() {
                 </div>
                 <div className="field">
                     <label>Password</label>
-                    <input value={state.password} onChange={handleChange} type="password" placeholder="password"/>
+                    <input value={state.password} onChange={handleChange} type="password" placeholder="pass"/>
                 </div>
                 
                 <button className="ui button" type="submit">Submit</button>
