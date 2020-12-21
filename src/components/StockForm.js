@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { financial } from '../utils/utils'
+import { financial } from '../utils/GenUtils'
 
 export default function StockForm({ auth, stock_id, user_stock_id=null, userOwned}) {
   const [state, setState] = useState({

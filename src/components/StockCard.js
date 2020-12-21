@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useAuth } from "../context/use-auth";
 import { useLocation } from "react-router-dom";
-import { isoId } from "../utils/utils";
+import { isoId } from "../utils/GenUtils";
 import StockForm from "./StockForm";
 
 function StockCard() {

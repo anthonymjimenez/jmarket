@@ -1,6 +1,6 @@
 import React  from 'react';
 import { NavLink } from 'react-router-dom';
-import { financial } from '../utils/utils'; 
+import { financial } from '../utils/GenUtils'; 
 
 function StockLink({ stock }) {
 

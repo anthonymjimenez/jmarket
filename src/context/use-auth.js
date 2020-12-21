@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useContext, createContext } from "react";
-
+import { post, deleteAction, put, url, checkResponse } from "../utils/GenUtils";
+import { findUserIndexes, findIndexById } from "../utils/UserUtils";
 const authContext = createContext();
 
 // Provider component that wraps your app and makes auth object ...
@@ -23,19 +24,15 @@ export const useAuth = () => {
 // Provider hook that creates auth object and handles state
 
 function useProvideAuth() {
-  const [user, setUser] = useState(null);
-  const [stocks, setStocks] = useState(null);
+  const [user, setUser] = useState(false);
+  const [stocks, setStocks] = useState(false);
 
   const signin = (state) => {
-    console.log(state);
-    fetch(`http://localhost:3000/api/v1/login`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Accept: "application/json",
-      },
+    fetch(`${url}login`, {
+      ...post,
       body: JSON.stringify({ ...state }),
     })
+      .then(checkResponse)
       .then((r) => r.json())
       .then((data) => {
         console.log(data);
@@ -46,47 +43,40 @@ function useProvideAuth() {
       .catch(console.error);
   };
 
-  // updatecrypto function ? like update balance but replace user crypto
   const signup = (state) => {
     console.log(state);
-    fetch(`http://localhost:3000/api/v1/users`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Accept: "application/json",
-      },
+    fetch(`${url}users`, {
+      ...post,
       body: JSON.stringify({ user: state }),
     })
+      .then(checkResponse)
       .then((resp) => resp.json())
       .then((data) => {
         console.log(data);
-        if (data.user.id) localStorage.setItem("id", data.user.id);
+        localStorage.setItem("id", data.user.id);
         setUser(data.user);
         setStocks(fetchStocks(data.user.id));
       })
       .catch(console.error);
-  }; //appendUserInfo
+  };
 
   const signInFromToken = async () => {
-    console.log("hello");
     const token = localStorage.getItem("id"); // set user with token if(token & user=dne) <- that means token was set and page has been reset, in that case use token to fetch user
     // use auth routes to restrict all routes before token is set, then use token to render user
     if (token) {
-      let resp = await fetch(`http://localhost:3000/api/v1/auto_login`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Accept: "application/json",
-        },
-        body: JSON.stringify({ id: token }),
-      });
-      let data = await resp.json();
-      if (data.errors) {
-        console.log(data.errors);
-        localStorage.removeItem("id");
-      } else {
+      try {
+        let resp = await fetch(`${url}auto_login`, {
+          ...post,
+          body: JSON.stringify({ id: token }),
+        });
+        checkResponse(resp);
+        console.log("hello");
+        let data = await resp.json();
         setUser(await data);
         setStocks(await fetchStocks(data.id));
+      } catch (err) {
+        console.error(err);
+        localStorage.removeItem("id");
       }
     }
   };
@@ -108,11 +98,8 @@ function useProvideAuth() {
   const deleteUser = async () => {
     // const token = localStorage.getItem("id"); // set user with token if(token & user=dne) <- that means token was set and page has been reset, in that case use token to fetch user
 
-    let resp = await fetch(`http://localhost:3000/api/v1/users/${user.id}`, {
-      headers: {
-        "Content-type": "application/json",
-      },
-      method: "DELETE",
+    let resp = await fetch(`${url}${user.id}`, {
+      ...deleteAction,
     });
     let data = await resp;
     console.log(data);
@@ -123,16 +110,31 @@ function useProvideAuth() {
     setUser(false);
   };
 
-  const removeUserStock = (stock_id, userData_id) => {
-    console.log(stock_id, userData_id)
-    let copyUser = user;
-    console.log(copyUser.stocks.findIndex(s => s.id == stock_id))
-    copyUser.stocks.map((s) => console.log(s.id));
+  const removeUserStock = async (stock_id, userData_id) => {
+    console.log(stock_id, userData_id);
+    // let copyUser = user;
+    // console.log(copyUser.stocks.findIndex(s => s.id == stock_id))
+    // copyUser.stocks.map((s) => console.log(s.id));
 
-    copyUser.stocks = copyUser.stocks.filter((s) => s.id == stock_id);
-    copyUser.user_owned_stocks = copyUser.user_owned_stocks.filter(
-      (s) => s.id == userData_id
-    );
+    // copyUser.stocks = copyUser.stocks.filter((s) => s.id == stock_id);
+    // copyUser.user_owned_stocks = copyUser.user_owned_stocks.filter(
+    //   (s) => s.id == userData_id
+    // );
+    const token = localStorage.getItem("id"); // set user with token if(token & user=dne) <- that means token was set and page has been reset, in that case use token to fetch user
+    // use auth routes to restrict all routes before token is set, then use token to render user
+    if (token) {
+      let resp = await fetch(`${url}auto_login`, {
+        ...post,
+        body: JSON.stringify({ id: token }),
+      });
+      let data = await resp.json();
+      if (data.errors) {
+        console.log(data.errors);
+        localStorage.removeItem("id");
+      } else {
+        setUser(await data);
+      }
+    }
 
     let copyStocks = stocks.map((s) => {
       if (s.id == stock_id) {
@@ -140,118 +142,115 @@ function useProvideAuth() {
       }
       return s;
     });
-  
-    console.log(copyStocks, copyUser)
-    setStocks(copyStocks);
-    setUser(copyUser);
-  };
 
+    //console.log(copyStocks, copyUser)
+    setStocks(copyStocks);
+    //setUser(copyUser);
+  };
+  const updateState = (userData) => {
+    updateUser(userData);
+    updateStock(userData);
+  };
   const updateUser = ({ stock, user: newUser, ...userStockData }) => {
     // frontend update stock
-    console.log(newUser);
     let copyUser = user;
-    let userStockIndex = copyUser.stocks.findIndex((s) => s.id == stock.id);
-    let userStockDataIndex = copyUser.user_owned_stocks.findIndex(
-      (s) => s.id == userStockData.id
+    let [userStockIndex, userStockDataIndex] = findUserIndexes(
+      copyUser,
+      stock,
+      userStockData
     );
-    console.log(userStockIndex, userStockDataIndex)
-    if(userStockIndex !== -1) {
+
     copyUser.stocks[userStockIndex] = stock;
     copyUser.user_owned_stocks[userStockDataIndex] = userStockData;
-    }else {
-      console.log('egllo')
-      copyUser.stocks[copyUser.stocks.length] = stock
-      copyUser.user_owned_stocks[copyUser.user_owned_stocks.length] = userStockData
-    }
 
-    let tempUser = {
+    setUser({
       stocks: copyUser.stocks,
       user_owned_stocks: copyUser.user_owned_stocks,
       ...newUser,
-    };
-
-    setUser(tempUser);
+    });
   };
 
   // create use-stocks?
   const updateStock = ({ stock, user: newUser, ...userStockData }) => {
-    console.log(stock, newUser, userStockData);
     let copyStocks = stocks;
-    let stockIndex = copyStocks.findIndex((s) => s.id == stock.id);
-    copyStocks[stockIndex].user_owned_stocks[0] = userStockData;
+    copyStocks[
+      findIndexById(copyStocks, stock)
+    ].user_owned_stocks[0] = userStockData;
 
     setStocks(copyStocks);
-
-    console.log(stocks);
   };
 
   const fetchStocks = async (id) => {
-    let s = await fetch("http://localhost:3000/api/v1/stocks");
-    let stocks = await s.json();
-    return stocks.map((s) => {
-      let userData = s.user_owned_stocks.filter((stock) => stock.user_id == id);
-      s.user_owned_stocks = userData;
-      return s;
-    });
+    try {
+      let resp = await fetch(`${url}stocks`);
+      checkResponse(resp);
+      let stocks = await resp.json();
+      return stocks.map((s) => {
+        let userData = s.user_owned_stocks.filter(
+          (stock) => stock.user_id == id
+        );
+        s.user_owned_stocks = userData;
+        return s;
+      });
+    } catch (err) {
+      console.error(err);
+    }
   };
 
   const buyStock = async (state) => {
-    let resp = await fetch(`http://localhost:3000/api/v1/buystock`, {
-      method: "PUT",
-      headers: {
-        "Content-Type": "application/json",
-        Accept: "application/json",
-      },
-      body: JSON.stringify({
-        user_stock_id: state.user_stock_id,
-        sharesBought: parseFloat(state.shares),
-      }),
-    });
-    let userData = await resp.json();
-    console.log(userData);
-    updateUser(userData);
-    updateStock(userData);
+    try {
+      let resp = await fetch(`${url}buystock`, {
+        ...put,
+        body: JSON.stringify({
+          user_stock_id: state.user_stock_id,
+          sharesBought: parseFloat(state.shares),
+        }),
+      });
+      checkResponse(resp);
+      let userData = await resp.json();
+      console.log(userData);
+      updateState(userData);
+    } catch (err) {
+      console.error(err);
+    }
   };
 
   const sellStock = async (state) => {
-    let resp = await fetch(`http://localhost:3000/api/v1/sellstock`, {
-      method: "PUT",
-      headers: {
-        "Content-Type": "application/json",
-        Accept: "application/json",
-      },
-      body: JSON.stringify({
-        user_stock_id: state.user_stock_id,
-        sharesSold: parseFloat(state.shares),
-      }),
-    });
-    let userData = await resp.json();
-    if(userData.deleted) {
-      console.log('yo')
-      removeUserStock(state.stock_id, state.user_stock_id)
+    try {
+      let resp = await fetch(`${url}sellstock`, {
+        ...put,
+        body: JSON.stringify({
+          user_stock_id: state.user_stock_id,
+          sharesSold: parseFloat(state.shares),
+        }),
+      });
+      checkResponse(resp);
+      let userData = await resp.json();
+      userData.deleted
+        ? removeUserStock(state.stock_id, state.user_stock_id)
+        : updateState(userData);
+    } catch (err) {
+      console.error(err);
     }
-    else {
-    console.log(userData);
-    updateUser(userData);
-    updateStock(userData);
-  }};
+  };
 
   const createStock = async (state) => {
-    let resp = await fetch(`http://localhost:3000/api/v1/user_owned_stocks`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Accept: "application/json",
-      },
-      body: JSON.stringify({
-        user: state.user_id,
-        stock: state.stock_id,
-        sharesOwned: parseFloat(state.shares),
-      }),
-    });
-    let userData = await resp.json();
-    console.log(userData);
-    addNewStock(userData);
+    try {
+      let resp = await fetch(`${url}user_owned_stocks`, {
+        ...post,
+        body: JSON.stringify({
+          user: state.user_id,
+          stock: state.stock_id,
+          sharesOwned: parseFloat(state.shares),
+        }),
+      });
+      checkResponse(resp);
+      let userData = await resp.json();
+      console.log(userData);
+      addNewStock(userData);
+    } catch (err) {
+      console.error(err);
+    }
     // updateUser(userData)
     // updateStock(userData)
   };
