@@ -11,7 +11,7 @@ export default function SignIn() {
 
     const handleSubmit = (e) => {
         e.preventDefault()
-        console.log(auth)
+        console.log(state)
         auth.signin(state)
     }
 

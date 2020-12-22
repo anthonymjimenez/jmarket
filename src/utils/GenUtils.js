@@ -26,8 +26,10 @@ export const put = {
 };
 
 export const checkResponse = (resp) => {
+  console.log(resp)
     if(!resp.ok) { 
     throw new Error(resp.statusText)
     }
+    return resp
 }
 export const url = "http://localhost:3000/api/v1/"

@@ -1,5 +1,6 @@
 import StockCard from './components/StockCard';
 import Dashboard from './container/Dashboard';
+import UserPage from './container/UserPage'
 import './App.css';
 import { useAuth } from './context/use-auth'
 import Landpage from './container/Landpage';
@@ -18,10 +19,8 @@ function App() {
 
   return (
     <div className="App">
-      {console.log(auth.user)}
-      {console.log(auth.stocks)}
+      {console.log(auth)}
       <Router>
-      <h1>{auth.user?.name}</h1>
       <Nav/>
       <Switch>
       <Route exact path="/">
@@ -32,6 +31,9 @@ function App() {
       </Route>
       <Route exact path="/dash">
       <Dashboard/>
+      </Route>
+      <Route exact path="/account">
+        <UserPage/>
       </Route>
       </Switch>
       </Router>

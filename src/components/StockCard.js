@@ -2,28 +2,20 @@ import React, { useEffect, useState } from "react";
 import { useAuth } from "../context/use-auth";
 import { useLocation } from "react-router-dom";
 import { isoId } from "../utils/GenUtils";
-import StockForm from "./StockForm";
+import StockFormContainer from "./StockFormContainer";
 
 function StockCard() {
   let auth = useAuth();
   const location = isoId(useLocation());
-  console.log(auth.stocks && auth.stocks?.find((s) => s.symbol == location));
-  let [stock, setStock] = useState({})
-  
-  useEffect(() => {  
-    if (auth.stocks) {
-    var stock = auth.stocks?.find((s) => s.symbol == location);
-    var userData =
-      stock.user_owned_stocks.length == 1 ? stock.user_owned_stocks[0] : false;
-    
-    setStock({...stock, userData: userData})
+  let [stock, setStock] = useState({});
 
-    console.log('hello')
-  }}, [auth])
+  useEffect(() => {
+    (auth.stocks) && setStock(auth.stocks?.find((s) => s.symbol === location));
+  }, [auth]);
 
   return (
     <>
-    {console.log(stock)}
+      {console.log(stock)}
       {stock ? (
         <>
           <h3>
@@ -37,19 +29,20 @@ function StockCard() {
           <h3>Current Price: ${stock.latestPrice} </h3>
           <hr />
           User Buying Power: {auth.user && auth.user?.usdBalance}
-          {stock.userData ? (
+          {stock.userData && (
             <>
-              <h3>Owned Shares: {stock.user_owned_stocks[0]?.sharesOwned}</h3>
-              <h3>Total Cost: {stock.user_owned_stocks[0]?.totalCost}</h3>
+              <h3>Owned Shares: {stock.userData?.sharesOwned}</h3>
+              <h3>Total Cost: ${stock.userData?.totalCost}</h3>
+              <h3>Average Cost: ${stock.userData?.averageCost }</h3>
               <h3></h3>
-              <StockForm auth ={auth} stock_id = {stock.id} user_stock_id ={stock.userData.id} userOwned={true}/>
             </>
-          ) : (<>{console.log(stock)}
-          <StockForm auth ={auth} stock_id = {stock?.id} userOwned={false}/>
-          </>)
-          }
-            <hr />
-
+          )}
+          <StockFormContainer
+            auth={auth}
+            stock={stock}
+            userOwned={stock.userData}
+          />
+          <hr />
         </>
       ) : (
         <h1>Loading...</h1>

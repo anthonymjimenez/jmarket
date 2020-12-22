@@ -8,7 +8,7 @@ function StockLink({ stock }) {
     <>
     {console.log(stock)}
     <NavLink to={{pathname: `/stocks/${stock.symbol}`}}>
-            <p>{stock.symbol}</p> 
+            <p>{stock.symbol} {stock.userData ? <>(Shares: {stock.userData.sharesOwned} )</> : <></>} </p> 
       </NavLink>
   
     </>

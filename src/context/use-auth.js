@@ -1,6 +1,8 @@
 import React, { useState, useEffect, useContext, createContext } from "react";
 import { post, deleteAction, put, url, checkResponse } from "../utils/GenUtils";
 import { findUserIndexes, findIndexById } from "../utils/UserUtils";
+
+
 const authContext = createContext();
 
 // Provider component that wraps your app and makes auth object ...
@@ -24,21 +26,23 @@ export const useAuth = () => {
 // Provider hook that creates auth object and handles state
 
 function useProvideAuth() {
+ 
   const [user, setUser] = useState(false);
   const [stocks, setStocks] = useState(false);
 
   const signin = (state) => {
+    console.log(state)
     fetch(`${url}login`, {
       ...post,
       body: JSON.stringify({ ...state }),
-    })
+    }) 
       .then(checkResponse)
       .then((r) => r.json())
       .then((data) => {
         console.log(data);
-        localStorage.setItem("id", data.user.id);
-        setUser(data.user.id);
-        setStocks(fetchStocks(data.user.id));
+        localStorage.setItem("id", data.id);
+        setUser(data);
+        fetchStocks(data).then(setStocks);
       })
       .catch(console.error);
   };
@@ -53,9 +57,9 @@ function useProvideAuth() {
       .then((resp) => resp.json())
       .then((data) => {
         console.log(data);
-        localStorage.setItem("id", data.user.id);
-        setUser(data.user);
-        setStocks(fetchStocks(data.user.id));
+        localStorage.setItem("id", data.id);
+        setUser(data);
+        fetchStocks(data).then(setStocks)
       })
       .catch(console.error);
   };
@@ -73,7 +77,7 @@ function useProvideAuth() {
         console.log("hello");
         let data = await resp.json();
         setUser(await data);
-        setStocks(await fetchStocks(data.id));
+        setStocks(await fetchStocks(data));
       } catch (err) {
         console.error(err);
         localStorage.removeItem("id");
@@ -135,16 +139,10 @@ function useProvideAuth() {
         setUser(await data);
       }
     }
-
-    let copyStocks = stocks.map((s) => {
-      if (s.id == stock_id) {
-        s.user_owned_stocks.length = 0;
-      }
-      return s;
-    });
-
+    let copyStocks = stocks
+    copyStocks[copyStocks.findIndex(s => s.id === stock_id)].userData = false
+    setStocks(copyStocks)
     //console.log(copyStocks, copyUser)
-    setStocks(copyStocks);
     //setUser(copyUser);
   };
   const updateState = (userData) => {
@@ -175,23 +173,25 @@ function useProvideAuth() {
     let copyStocks = stocks;
     copyStocks[
       findIndexById(copyStocks, stock)
-    ].user_owned_stocks[0] = userStockData;
+    ].userData = userStockData;
 
     setStocks(copyStocks);
   };
 
-  const fetchStocks = async (id) => {
+  const fetchStocks = async (data) => {
+    console.log(user)
     try {
       let resp = await fetch(`${url}stocks`);
       checkResponse(resp);
       let stocks = await resp.json();
-      return stocks.map((s) => {
-        let userData = s.user_owned_stocks.filter(
-          (stock) => stock.user_id == id
-        );
-        s.user_owned_stocks = userData;
-        return s;
+      console.log(user)
+    data.user_owned_stocks?.forEach((s) => {
+      console.log(s)
+        let index = stocks.findIndex(stock => stock.id === s.stock_id ) 
+        stocks[index].userData = s 
       });
+    console.log(stocks)
+    return stocks
     } catch (err) {
       console.error(err);
     }
@@ -203,7 +203,7 @@ function useProvideAuth() {
         ...put,
         body: JSON.stringify({
           user_stock_id: state.user_stock_id,
-          sharesBought: parseFloat(state.shares),
+          sharesBought: state.shares,
         }),
       });
       checkResponse(resp);
@@ -221,7 +221,7 @@ function useProvideAuth() {
         ...put,
         body: JSON.stringify({
           user_stock_id: state.user_stock_id,
-          sharesSold: parseFloat(state.shares),
+          sharesSold: state.shares,
         }),
       });
       checkResponse(resp);
@@ -241,7 +241,7 @@ function useProvideAuth() {
         body: JSON.stringify({
           user: state.user_id,
           stock: state.stock_id,
-          sharesOwned: parseFloat(state.shares),
+          sharesOwned: state.shares,
         }),
       });
       checkResponse(resp);
