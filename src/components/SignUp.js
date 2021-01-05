@@ -7,8 +7,6 @@ export default function SignUp({handleSignUp}) {
     age: 0,
     username: "",
     pass: "",
-    totalInvested: 0,
-    usdBalance: 100
   })
 
   const auth = useAuth();

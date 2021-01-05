@@ -35,6 +35,9 @@ function App() {
       <Route exact path="/account">
         <UserPage/>
       </Route>
+      <Route exact path="/tags/:id">
+        <TagPage/>
+      </Route>
       </Switch>
       </Router>
     </div>

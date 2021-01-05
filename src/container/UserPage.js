@@ -1,10 +1,13 @@
 import React, { useEffect, useState } from "react";
+import UserStockTableContainer from "../container/UserStockTableContainer";
 
 export default function UserPage() {
 
   return (
     <>
         User Page
+
+        <UserStockTableContainer/>
     </>
   );
 }

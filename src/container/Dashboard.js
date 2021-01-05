@@ -1,7 +1,8 @@
 import React, {useEffect} from 'react';
 import Dashfolio from '../components/Dashfolio';
+import SearchStock from '../components/SearchStocks';
 import { useAuth } from '../context/use-auth';
-
+import { financial } from '../utils/GenUtils'
 function Dashboard() {
     let auth = useAuth();
     // useEffect(() => {
@@ -17,11 +18,13 @@ function Dashboard() {
         // })
     }
     return (
-        <> 
+        <>
+        <SearchStock/>
         {auth.user && currentTotal()}
-        <h3>Buying Power: ${auth.user?.usdBalance}</h3>
-        <h3>Capital Invested: ${auth.user?.totalInvested} </h3>
-        <h3>Total Equity: </h3>
+        <h3>Portfolio Value:${financial(auth.user?.totalInvested + 35)}(+5%) </h3>
+        <h3>Total Invested: {financial(auth.user?.totalInvested)}</h3>
+        <h4>Buying Power: ${auth.user?.usdBalance}</h4>
+
         <Dashfolio/>
         </>
     )

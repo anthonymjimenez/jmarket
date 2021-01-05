@@ -2,13 +2,12 @@ import React  from 'react';
 import { NavLink } from 'react-router-dom';
 import { financial } from '../utils/GenUtils'; 
 
-function StockLink({ stock }) {
+function StockLink({name, symbol, userData}) {
 
   return (
     <>
-    {console.log(stock)}
-    <NavLink to={{pathname: `/stocks/${stock.symbol}`}}>
-            <p>{stock.symbol} {stock.userData ? <>(Shares: {stock.userData.sharesOwned} )</> : <></>} </p> 
+    <NavLink to={{pathname: `/stocks/${symbol}`}}>
+            <p>{name}{symbol} {userData ? <>(Shares: {userData.sharesOwned} )</> : <></>} </p> 
       </NavLink>
   
     </>

@@ -5,5 +5,9 @@ export const findUserIndexes = (user, stock, stockUserData) => [
 
 export const findIndexById = (data, ref) => {
   let index = data.findIndex((d) => d.id === ref.id);
-  return index !== -1 ? index : 0;
+  return index !== -1 ? index : data.length;
 };
+
+export const userStocks = () => {
+
+}

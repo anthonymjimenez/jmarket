@@ -55,11 +55,11 @@ function useProvideAuth() {
     })
       .then(checkResponse)
       .then((resp) => resp.json())
-      .then((data) => {
-        console.log(data);
-        localStorage.setItem("id", data.id);
-        setUser(data);
-        fetchStocks(data).then(setStocks)
+      .then(({user}) => {
+        console.log(user);
+        localStorage.setItem("id", user.id);
+        setUser(user);
+        fetchStocks(user).then(setStocks)
       })
       .catch(console.error);
   };
@@ -171,6 +171,9 @@ function useProvideAuth() {
   // create use-stocks?
   const updateStock = ({ stock, user: newUser, ...userStockData }) => {
     let copyStocks = stocks;
+    console.log(copyStocks[
+      findIndexById(copyStocks, stock)
+    ])
     copyStocks[
       findIndexById(copyStocks, stock)
     ].userData = userStockData;
@@ -184,14 +187,15 @@ function useProvideAuth() {
       let resp = await fetch(`${url}stocks`);
       checkResponse(resp);
       let stocks = await resp.json();
-      console.log(user)
+      let finalStocks = stocks.map(s => { s.userData = false
+        return s })
     data.user_owned_stocks?.forEach((s) => {
       console.log(s)
         let index = stocks.findIndex(stock => stock.id === s.stock_id ) 
-        stocks[index].userData = s 
+        finalStocks[index].userData = s 
       });
     console.log(stocks)
-    return stocks
+    return finalStocks
     } catch (err) {
       console.error(err);
     }
@@ -261,7 +265,13 @@ function useProvideAuth() {
     updateUser(user_owned_stock);
     updateStock(user_owned_stock);
   };
-
+  const findStock = (sym) => 
+    stocks ? stocks.find(stock => stock.symbol == sym) : false
+  
+  const findUserStock = (sym) => {
+    let data = (user?.user_owned_stocks) ? user.user_owned_stocks.find(stock => stock.symbol == sym) : false
+    return data == undefined ? false : data
+    } 
   // Subscribe to user on mount
 
   // Because this sets state in the callback it will cause any ...
@@ -271,9 +281,10 @@ function useProvideAuth() {
   // ... latest auth object.
 
   useEffect(() => {
-    (() => (user ? setUser(user) : setUser(false)))();
     (() => (stocks ? setStocks(stocks) : setStocks(false)))();
-  }, []);
+
+    (() => (user ? setUser(user) : setUser(false)))();
+  }, [stocks, user]);
 
   // Return the user object and auth methods
 
@@ -283,6 +294,8 @@ function useProvideAuth() {
     buyStock,
     sellStock,
     createStock,
+    findStock,
+    findUserStock,
     signin,
     signup,
     signout,
