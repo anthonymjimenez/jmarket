@@ -5,6 +5,7 @@ import { Table } from "react-bootstrap";
 function UserStockTableBody({ stocks }) {
   return (
     <tbody>
+      {console.log(stocks)}
       {stocks.map((stock) => (
         <tr>
           <td>{stock.name}</td>

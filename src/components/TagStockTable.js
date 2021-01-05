@@ -7,11 +7,23 @@ function TagStockTableBody({ stocks }) {
     <tbody>
       {stocks.map((stock) => (
         <tr>
-          <td>{stock.name}</td>
+          <td>
+            <NavLink to={{ pathname: `/stocks/${stock.symbol}` }}>
+              {stock.name}
+              {stock.userData ? (
+                <>
+                  {" "}
+                  <br />
+                  <small>&#10003; {stock.userData.sharesOwned} Shares</small>
+                </>
+              ) : null}
+            </NavLink>
+          </td>
           <td>{stock.symbol}</td>
           <td>{stock.latestPrice}</td>
+          <td>{stock.dailyChangePercent}</td>
           <td>{stock.marketCap}</td>
-          <td>{stock.userData ? stock.userData.sharesOwned : <p>0</p> }</td>
+          <td>{}</td>
         </tr>
       ))}
     </tbody>

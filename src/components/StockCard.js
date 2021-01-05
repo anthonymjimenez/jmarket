@@ -16,9 +16,9 @@ function StockCard() {
   }, [stocks, stock])
 //MUST BE CAUSE OF HOW I GRAB IT, CHANGE TO  AFILTERUTIL
 
-  const renderTags = () => {
-    stock && stock.tags.map(({title}) => <TagLink title={title}/>)
-}
+  const renderTags = () =>
+    findStock(location).tags.filter(s => !s.split('').includes('/', ',')).map(title => <TagLink title={title}/>)
+
    return (
     <>
     {console.log(findStock(location))}
@@ -33,7 +33,7 @@ function StockCard() {
           <h3>Year Low: ${findStock(location).yearLow} </h3>
           <h3>Year To Date Change: {findStock(location).ytdChange}%</h3>
           <h3>Current Price: ${findStock(location).latestPrice} </h3>
-          <h4>Tags: {renderTags()} </h4>
+          <h4>Tags: </h4> {renderTags()} 
           <hr />
           User Buying Power: {user && user?.usdBalance}
           {findUserStock(location) && (

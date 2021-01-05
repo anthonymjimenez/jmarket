@@ -2,7 +2,6 @@ import React, { useState, useEffect, useContext, createContext } from "react";
 import { post, deleteAction, put, url, checkResponse } from "../utils/GenUtils";
 import { findUserIndexes, findIndexById } from "../utils/UserUtils";
 
-
 const authContext = createContext();
 
 // Provider component that wraps your app and makes auth object ...
@@ -26,16 +25,15 @@ export const useAuth = () => {
 // Provider hook that creates auth object and handles state
 
 function useProvideAuth() {
- 
   const [user, setUser] = useState(false);
   const [stocks, setStocks] = useState(false);
 
   const signin = (state) => {
-    console.log(state)
+    console.log(state);
     fetch(`${url}login`, {
       ...post,
       body: JSON.stringify({ ...state }),
-    }) 
+    })
       .then(checkResponse)
       .then((r) => r.json())
       .then((data) => {
@@ -55,11 +53,11 @@ function useProvideAuth() {
     })
       .then(checkResponse)
       .then((resp) => resp.json())
-      .then(({user}) => {
+      .then(({ user }) => {
         console.log(user);
         localStorage.setItem("id", user.id);
         setUser(user);
-        fetchStocks(user).then(setStocks)
+        fetchStocks(user).then(setStocks);
       })
       .catch(console.error);
   };
@@ -139,9 +137,9 @@ function useProvideAuth() {
         setUser(await data);
       }
     }
-    let copyStocks = stocks
-    copyStocks[copyStocks.findIndex(s => s.id === stock_id)].userData = false
-    setStocks(copyStocks)
+    let copyStocks = stocks;
+    copyStocks[copyStocks.findIndex((s) => s.id === stock_id)].userData = false;
+    setStocks(copyStocks);
     //console.log(copyStocks, copyUser)
     //setUser(copyUser);
   };
@@ -171,31 +169,30 @@ function useProvideAuth() {
   // create use-stocks?
   const updateStock = ({ stock, user: newUser, ...userStockData }) => {
     let copyStocks = stocks;
-    console.log(copyStocks[
-      findIndexById(copyStocks, stock)
-    ])
-    copyStocks[
-      findIndexById(copyStocks, stock)
-    ].userData = userStockData;
+    console.log(copyStocks[findIndexById(copyStocks, stock)]);
+    copyStocks[findIndexById(copyStocks, stock)].userData = userStockData;
 
     setStocks(copyStocks);
   };
 
   const fetchStocks = async (data) => {
-    console.log(user)
+    console.log(user);
     try {
       let resp = await fetch(`${url}stocks`);
       checkResponse(resp);
       let stocks = await resp.json();
-      let finalStocks = stocks.map(s => { s.userData = false
-        return s })
-    data.user_owned_stocks?.forEach((s) => {
-      console.log(s)
-        let index = stocks.findIndex(stock => stock.id === s.stock_id ) 
-        finalStocks[index].userData = s 
+      let finalStocks = stocks.map((s) => {
+        s.userData = false;
+        return s;
       });
-    console.log(stocks)
-    return finalStocks
+      data.user_owned_stocks?.forEach((s) => {
+        console.log(s);
+        let index = stocks.findIndex((stock) => stock.id === s.stock_id);
+        finalStocks[index].userData = s;
+      });
+
+
+      return finalStocks;
     } catch (err) {
       console.error(err);
     }
@@ -265,13 +262,15 @@ function useProvideAuth() {
     updateUser(user_owned_stock);
     updateStock(user_owned_stock);
   };
-  const findStock = (sym) => 
-    stocks ? stocks.find(stock => stock.symbol == sym) : false
-  
+  const findStock = (sym) =>
+    stocks ? stocks.find((stock) => stock.symbol == sym) : false;
+
   const findUserStock = (sym) => {
-    let data = (user?.user_owned_stocks) ? user.user_owned_stocks.find(stock => stock.symbol == sym) : false
-    return data == undefined ? false : data
-    } 
+    let data = user?.user_owned_stocks
+      ? user.user_owned_stocks.find((stock) => stock.symbol == sym)
+      : false;
+    return data == undefined ? false : data;
+  };
   // Subscribe to user on mount
 
   // Because this sets state in the callback it will cause any ...

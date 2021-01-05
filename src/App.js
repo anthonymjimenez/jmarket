@@ -4,6 +4,7 @@ import UserPage from './container/UserPage'
 import './App.css';
 import { useAuth } from './context/use-auth'
 import Landpage from './container/Landpage';
+import TagPage from './container/TagPage';
 import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
 import Nav from './components/Nav';
 import { useEffect } from 'react';

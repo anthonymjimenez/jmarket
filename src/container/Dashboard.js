@@ -19,7 +19,7 @@ function Dashboard() {
     }
     return (
         <>
-        <SearchStock/>
+        <SearchStock stocks ={auth.stocks}/>
         {auth.user && currentTotal()}
         <h3>Portfolio Value:${financial(auth.user?.totalInvested + 35)}(+5%) </h3>
         <h3>Total Invested: {financial(auth.user?.totalInvested)}</h3>
