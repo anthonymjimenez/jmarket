@@ -29,7 +29,7 @@ function TagPage() {
       <th onClick={() => setSortBy('name')}>Company Name</th>
       <th onClick={() => setSortBy('symbol')}>Symbol</th>
       <th onClick={() => setSortBy('latestPrice')}>Current Price</th>
-      <th onClick={() => setSortBy('dailyChangePercent')}>Today</th>
+      <th onClick={() => setSortBy('dailyChangePercent')}>Today (%)</th>
       <th onClick={() => setSortBy('marketCap')}>Market Cap</th>
     </tr>
   </thead>

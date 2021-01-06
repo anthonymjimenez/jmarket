@@ -16,7 +16,7 @@ export default function SearchStock({ stocks }) {
             .filter((s) =>
               s.name.toLowerCase().includes(searchTerm.toLowerCase())
             )
-            .map((s) => s)
+            .map((s) => s).slice(0,6)
         )
       : setSearchResults([]);
   }, [searchTerm, stocks]);
@@ -39,7 +39,7 @@ export default function SearchStock({ stocks }) {
       </Form>
       <hr /> <br />
       {search.map((stock) => (
-        <StockLink name={""} symbol={stock.symbol} userData={stock.userData} />
+        <StockLink name={stock.name} symbol={stock.symbol} userData={stock.userData} />
       ))}
     </>
   );
