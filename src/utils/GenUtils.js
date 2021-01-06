@@ -62,11 +62,11 @@ export const findPopularTags = (stocks) => {
 
    sortable.sort((a,b) => b[1] - a[1])
    
-   return sortable.slice(0, 25)
+   return sortable.slice(0, 17)
  }
  
- export const extractShuffle = (stocks) => {
-  return shuffle(stocks).slice(0,7)
+ export const extractShuffle = (stocks, amount) => {
+  return shuffle(stocks).slice(0,amount)
  }
 export function shuffle(array) {
   var currentIndex = array.length, temporaryValue, randomIndex;

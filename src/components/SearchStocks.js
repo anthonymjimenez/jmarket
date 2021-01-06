@@ -14,7 +14,7 @@ export default function SearchStock({ stocks }) {
       ? setSearchResults(
           stocks
             .filter((s) =>
-              s.name.toLowerCase().includes(searchTerm.toLowerCase())
+              s.symbol.toLowerCase().includes(searchTerm.toLowerCase())
             )
             .map((s) => s).slice(0,6)
         )
@@ -33,9 +33,9 @@ export default function SearchStock({ stocks }) {
           onChange={(e) => setTerm(e.target.value)}
         />
         <br />
-        Search By:{" "}
+        {/* Search By:{" "}
         <Form.Check checked={true} type={"radio"} label={"Company Name"} />
-        <Form.Check type={"radio"} checked={false} label={"Symbol"} />
+        <Form.Check type={"radio"} checked={false} label={"Symbol"} /> */}
       </Form>
       <hr /> <br />
       {search.map((stock) => (

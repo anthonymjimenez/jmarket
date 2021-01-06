@@ -7,7 +7,7 @@ function Dashfolio() {
     let {stocks, user} = useAuth()
     
  
-    let togTags = extractShuffle(findPopularTags(stocks))
+    let togTags = extractShuffle(findPopularTags(stocks), 5)
     //let popularStocks = shuffle(findPopularStocks(stocks))
     return (
         <>
@@ -16,13 +16,14 @@ function Dashfolio() {
         <StockLinks stocks={stocks ? stocks?.filter((s) => s.userData) : false } />
 
         Explore Popular Tags
+        <hr/>
         {togTags.map(t => <TagLink title ={t[0]} /> )}
 
         Explore Popular Stocks
-        <StockLinks stocks={stocks ? extractShuffle(findPopularStocks(stocks)) : null }/>
+        <StockLinks stocks={stocks ? extractShuffle(findPopularStocks(stocks), 7) : null }/>
 
         Explore Up and Coming Stocks
-        <StockLinks stocks={stocks ? extractShuffle(findUpComingStocks(stocks)) : null }/>
+        <StockLinks stocks={stocks ? extractShuffle(findUpComingStocks(stocks), 7) : null }/>
         
         </>
     )

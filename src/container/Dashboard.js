@@ -21,9 +21,9 @@ function Dashboard() {
         <>
         <SearchStock stocks ={auth.stocks}/>
         {auth.user && currentTotal()}
-        <h3>Portfolio Value:${financial(auth.user?.totalInvested + 35)}(+5%) </h3>
-        <h3>Total Invested: {financial(auth.user?.totalInvested)}</h3>
-        <h4>Buying Power: ${auth.user?.usdBalance}</h4>
+        {/* <h3>Portfolio Value:${financial(auth.user?.totalInvested + 35)}(+5%) </h3> */}
+        <h3>Total Invested: ${financial(auth.user?.totalInvested)}</h3>
+        <h4>Buying Power: ${financial(auth.user?.usdBalance)}</h4>
 
         <Dashfolio/>
         </>

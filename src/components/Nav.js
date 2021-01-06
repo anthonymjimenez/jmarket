@@ -12,10 +12,10 @@ function Nav() {
             <Link to="/">Sign In /</Link>
           </li>
           <li>
-              <Link to ='/dash'> Dashboard /</Link>
+              <Link to ='/dash'> Dashboard   /</Link>
           </li>
           <li>
-            <Link to ='/account'>Account</Link>
+            <Link to ='/account'>Account  </Link>
           </li>
         </ul>
     </nav>
