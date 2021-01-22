@@ -1,5 +1,6 @@
 import React, {useState} from 'react'
 import { useAuth } from '../context/use-auth';
+import { Form, Button } from "react-bootstrap";
 
 export default function SignIn() {
     const auth = useAuth()
@@ -25,18 +26,18 @@ export default function SignIn() {
         <div>
             <div style={formDivStyle}>
             <h1>Log In</h1>
-            <form className="ui form" onSubmit={handleSubmit}>
-                <div className="field">
-                    <label>Username</label>
-                    <input value={state.username} onChange={handleChange} type="text" placeholder="username"/>
-                </div>
-                <div className="field">
-                    <label>Password</label>
-                    <input value={state.password} onChange={handleChange} type="password" placeholder="pass"/>
-                </div>
+            <Form className="ui form" onSubmit={handleSubmit}>
+                <Form.Group >
+                    <Form.Label>Username</Form.Label>
+                    <Form.Control value={state.username} onChange={handleChange} type="text" placeholder="username"/>
+                </Form.Group>
+                <Form.Group>
+                    <Form.Label>Password</Form.Label>
+                    <Form.Control value={state.password} onChange={handleChange} type="password" placeholder="pass"/>
+                </Form.Group>
                 
-                <button className="ui button" type="submit">Submit</button>
-            </form>
+                <Button className="ui button" type="submit">Submit</Button>
+            </Form>
         </div>
         </div>
     )

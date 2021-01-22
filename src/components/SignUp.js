@@ -1,5 +1,6 @@
 import React, {useState} from 'react'
 import { useAuth } from '../context/use-auth';
+import { Form, Button } from "react-bootstrap";
 
 export default function SignUp({handleSignUp}) {
   const [state, setState] = useState({
@@ -22,36 +23,31 @@ export default function SignUp({handleSignUp}) {
       auth.signup(state)
   }
 
-  // add to css
-  const formDivStyle = {
-      margin: "auto",
-      padding: "20px",
-      width: "80%"
-  }
+
   
   return(
-      <div style={formDivStyle}>
+      <div>
           <h1>Sign Up</h1>
-          <form className="ui form" onSubmit={handleSubmit}>
-              <div className="field">
-                  <label>Name</label>
-                  <input value={state.name} onChange={handleChange} type="text" placeholder="name"/>
-              </div>
-              <div className="field">
-                  <label>Age</label>
-                  <input value={state.age} onChange={handleChange} type="number" placeholder="age"/>
-              </div>
-              <div className="field">
-                  <label>Username</label>
-                  <input value={state.username} onChange={handleChange} type="text" placeholder="username"/>
-              </div>
-              <div className="field">
-                  <label>Password</label>
-                  <input value={state.password} onChange={handleChange} type="password" placeholder="pass"/>
-              </div>
+          <Form className="ui form" onSubmit={handleSubmit}>
+              <Form.Group>
+                  <Form.Label>Name</Form.Label>
+                  <Form.Control value={state.name} onChange={handleChange} type="text" placeholder="name"/>
+              </Form.Group>
+              <Form.Group>
+                  <Form.Label>Age  </Form.Label>
+                  <Form.Control value={state.age} onChange={handleChange} type="number" placeholder="age"/>
+              </Form.Group>
+              <Form.Group>
+                  <Form.Label>Username</Form.Label>
+                  <Form.Control value={state.username} onChange={handleChange} type="text" placeholder="username"/>
+              </Form.Group>
+              <Form.Group>
+                  <Form.Label>Password</Form.Label>
+                  <Form.Control value={state.password} onChange={handleChange} type="password" placeholder="pass"/>
+              </Form.Group>
               
-              <button className="ui button" type="submit">Submit</button>
-          </form>
+              <Button className="ui button" type="submit">Submit</Button>
+          </Form>
       </div>
   )
 }

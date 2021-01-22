@@ -37,7 +37,7 @@ export default function StockFormContainer({
     <StockForm type={"buy"} stock={stock} handleSubmit={handleBuySubmit} />
     </Tab>
     <Tab eventKey="profile" title="Sell"  disabled={userOwned ? false : true}>
-    {userOwned ? <StockForm type={"sell"} stock={stock} handleSubmit={handleSellSubmit} sharesOwned={userOwned.sharesOwned}/> : <h3>You own 0 shares of ${stock?.name}</h3> }
+    {userOwned ? <StockForm type={"sell"} stock={stock} handleSubmit={handleSellSubmit} sharesOwned={userOwned.sharesOwned}/> : <h3>You own 0 shares of {stock?.name}</h3> }
   </Tab>
 </Tabs>
      </div>

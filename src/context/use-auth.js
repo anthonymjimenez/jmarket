@@ -266,9 +266,7 @@ function useProvideAuth() {
     stocks ? stocks.find((stock) => stock.symbol == sym) : false;
 
   const findUserStock = (sym) => {
-    let data = user?.user_owned_stocks
-      ? user.user_owned_stocks.find((stock) => stock.symbol == sym)
-      : false;
+    let data = user?.user_owned_stocks?.find((stock) => stock.symbol == sym)
     return data == undefined ? false : data;
   };
   // Subscribe to user on mount

@@ -1,8 +1,10 @@
 import React, { useEffect, useState } from "react";
 import UserStockTableContainer from "../container/UserStockTableContainer";
-import { Tabs, Tab, TabsContainer } from "react-bootstrap";
+import { Tabs, Tab, TabsContainer, ListGroup } from "react-bootstrap";
+import { useAuth } from "../context/use-auth";
 
 export default function UserPage() {
+  let { user } = useAuth();
   return (
     <>
       User Page
@@ -16,7 +18,12 @@ export default function UserPage() {
           <UserStockTableContainer />
         </Tab>
         <Tab eventKey="profile" title="Account Info">
-          c
+          <ListGroup>
+            <ListGroup.Item>Username: {user.username}</ListGroup.Item>
+            <ListGroup.Item>Balance: {user.usdBalance}</ListGroup.Item>
+            <ListGroup.Item>Invested: {user.totalInvested}</ListGroup.Item>
+            <ListGroup.Item>Created at: {user.created_at}</ListGroup.Item>
+          </ListGroup>
         </Tab>
       </Tabs>
     </>

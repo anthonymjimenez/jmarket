@@ -8,40 +8,35 @@ import CompanyInfo from './CompanyInfo';
 
 function StockCard() {
   const location = isoId(useLocation());
-  let [stock, setStock] = useState({});
-  let { user, stocks, findStock, findUserStock} = useAuth();
+  let { findStock, findUserStock} = useAuth();
+  let stock = findStock(location)
+  let userStock = findUserStock(location)
   
-  useEffect(() => {
-    console.log('helllooooo')
-    setStock(findStock(location))
-  }, [stocks, stock])
-//MUST BE CAUSE OF HOW I GRAB IT, CHANGE TO  AFILTERUTIL
-
   const renderTags = () =>
-    findStock(location).tags.filter(s => !s.split('').includes('/', ',')).map(title => <TagLink title={title}/>)
+    findStock(location)?.tags?.filter(s => !s.split('').includes('/', ',')).map(title => <TagLink title={title}/>)
   //make stockInfo component 
    return (
     <>
-      {findStock(location) ? (
+      {stock ? (
         <>
           <h3>
-            {findStock(location).name}({findStock(location).symbol}){" "}
+            {stock.name}({stock.symbol}){" "}
           </h3>
-          <h4>Price/Earnings Ratio: {  findStock(location).peRatio} </h4>
-          <h4>Market Cap: ${findStock(location).marketCap} </h4>
-          <h4>Year High: ${findStock(location).yearHigh} </h4>
-          <h4>Year Low: ${findStock(location).yearLow} </h4>
+          <h4>Price/Earnings Ratio: {stock.peRatio} </h4>
+          <h4>Market Cap: ${stock.marketCap} </h4>
+          <h4>Year High: ${stock.yearHigh} </h4>
+          <h4>Year Low: ${stock.yearLow} </h4>
           {/* <h4>Year To Date Change: {financial(findStock(location).ytdChange) * 100}%</h4> */}
-          <h4>Current Price: ${findStock(location).latestPrice} </h4>
-          <h4>Daily Change: ${findStock(location).dailyChange}</h4>
-          <h4>Daily Change(%): {financial(findStock(location).dailyChangePercent) * 100}%</h4>
+          <h4>Current Price: ${stock.latestPrice} </h4>
+          <h4>Daily Change: ${stock.dailyChange}</h4>
+          <h4>Daily Change(%): {financial(stock.dailyChangePercent) * 100}%</h4>
           <h4>Tags: </h4> {renderTags()} 
           <hr />
-          {findUserStock(location) && (
+          {userStock && (
             <>
-              <h3>Owned Shares: {financial(findUserStock(location).sharesOwned)}</h3>
-              <h3>Total Cost: ${financial(findUserStock(location).totalCost)}</h3>
-              <h3>Average Cost: ${financial(findUserStock(location).averageCost) }</h3>
+              <h3>Owned Shares: {financial(userStock.sharesOwned)}</h3>
+              <h3>Total Cost: ${financial(userStock.totalCost)}</h3>
+              <h3>Average Cost: ${financial(userStock.averageCost) }</h3>
               <h3></h3>
             </>
           )}

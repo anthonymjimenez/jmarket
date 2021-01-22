@@ -8,6 +8,4 @@ export const findIndexById = (data, ref) => {
   return index !== -1 ? index : data.length;
 };
 
-export const userStocks = () => {
-
-}
+export const userStocks = (stocks) => stocks?.filter((s) => s.userData)

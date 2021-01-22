@@ -7,6 +7,7 @@ import Landpage from './container/Landpage';
 import TagPage from './container/TagPage';
 import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
 import Nav from './components/Nav';
+import AllStocksPage from './container/AllStocksPage';
 import { useEffect } from 'react';
 
 function App() {
@@ -22,7 +23,7 @@ function App() {
     <div className="App">
       {console.log(auth)}
       <Router>
-      <Nav/>
+      <Nav />
       <Switch>
       <Route exact path="/">
       <Landpage/>
@@ -38,6 +39,9 @@ function App() {
       </Route>
       <Route exact path="/tags/:id">
         <TagPage/>
+      </Route>
+      <Route exact path="/allStocks">
+        <AllStocksPage/>
       </Route>
       </Switch>
       </Router>
