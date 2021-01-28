@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import StockLink from "./StockLink";
 import { useAuth } from "../context/use-auth";
+import { allTags } from "../utils/GenUtils";
 import { Form } from "react-bootstrap";
 
 export default function SearchStock({ stocks }) {
@@ -12,12 +13,14 @@ export default function SearchStock({ stocks }) {
       ? setSearchResults([])
       : searchTerm !== ""
       ? setSearchResults(
-          stocks
+          [stocks
             .filter((s) =>
               s.symbol.toLowerCase().includes(searchTerm.toLowerCase())
             )
             .map((s) => s).slice(0,6)
-        )
+          , 
+        
+        ]) 
       : setSearchResults([]);
   }, [searchTerm, stocks]);
 
@@ -25,6 +28,7 @@ export default function SearchStock({ stocks }) {
     <>
       <hr />
       <br />
+      {console.log(allTags(stocks))}
       <Form>
         Explore the Market:{" "}
         <input

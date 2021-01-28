@@ -43,6 +43,13 @@ export const findPopularStocks = (stocks) => {
     stocks && stocks.sort((a, b) => b.marketCap - a.marketCap).slice(0, 30)
   );
 };
+
+export const allTags = (stocks) => {
+  return stocks && [...new Set(stocks
+    .map((s) => s.tags)
+    .flat()
+  )]
+  }
 export const findPopularTags = (stocks) => {
   let adminTags =
     stocks &&
