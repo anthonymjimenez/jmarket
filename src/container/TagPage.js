@@ -3,14 +3,15 @@ import Dashfolio from "../components/Dashfolio";
 import SearchStock from "../components/SearchStocks";
 import TagStockTableBody from "../components/TagStockTable";
 import { Table } from "react-bootstrap";
-import { useLocation } from "react-router-dom";
+import { useLocation, useParams } from "react-router-dom";
 
 import { useAuth } from "../context/use-auth";
 import { financial, isoId } from "../utils/GenUtils";
 import Sort from "../components/Sort";
 function TagPage() {
   let { stocks } = useAuth();
-  const tag = isoId(useLocation());
+  const tag = useParams().id;
+  console.log();
   let [sortedStocks, setSortedStocks] = useState(false);
   let [sortBy, setSortBy] = useState(null);
   let [sortCheck, setSortCheck] = useState(false);
