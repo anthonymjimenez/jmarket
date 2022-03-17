@@ -7,35 +7,33 @@ export default function Landpage() {
   let [toggle, setToggle] = useState(false);
   // const auth = useAuth();
 
-
   return (
     <>
-    <img src="https://i.imgur.com/cmDG09D.png" width='300' height='300'/>
+      <img src="https://i.imgur.com/cmDG09D.png" width="300" height="300" />
 
-    <h1>Welcome to jHood!</h1>
-    <h3>An online Stock Market Exchange</h3>
+      <h1>Welcome to jHood!</h1>
+      <h3>An online Stock Market Exchange</h3>
 
-    <Tabs
+      <Tabs
         defaultActiveKey="logIn"
         disabled={false}
         transition={false}
         id="noanim-tab-example"
       >
         <Tab eventKey="logIn" title="Log In">
-        <SignIn/>
+          <SignIn />
         </Tab>
         <Tab eventKey="signUp" title="Sign Up">
-        <SignUp/>
+          <SignUp />
         </Tab>
       </Tabs>
     </>
   );
 }
 
-  // const renderForm = () =>
-  //   toggleForms ? (
-  //     <LoginForm handleLogIn={auth.signin} />
-  //   ) : (
-  //     <SignupForm handleSignUp={auth.signup} />
-  //   );
-
+// const renderForm = () =>
+//   toggleForms ? (
+//     <LoginForm handleLogIn={auth.signin} />
+//   ) : (
+//     <SignupForm handleSignUp={auth.signup} />
+//   );

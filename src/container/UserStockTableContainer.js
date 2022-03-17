@@ -7,18 +7,19 @@ import UserStockTableBody from "../components/UserStockTableBody";
 import Sort from "../components/Sort";
 function UserStockTableContainer() {
   let { stocks } = useAuth();
-  let userStocks = () => stocks && stocks.filter((s) => s.userData) 
+  let userStocks = () => stocks && stocks.filter((s) => s.userData);
   let [sortedStocks, setSortedStocks] = useState(false);
   let [sortBy, setSortBy] = useState(null);
   let [sortCheck, setSortCheck] = useState(false);
 
-
-
-  
-  
   return (
     <>
-      <Sort setSortedStocks={setSortedStocks} sortBy={sortBy} sortCheck={sortCheck} stocks={userStocks()}/>
+      <Sort
+        setSortedStocks={setSortedStocks}
+        sortBy={sortBy}
+        sortCheck={sortCheck}
+        stocks={userStocks()}
+      />
 
       <h3>Owned Stocks</h3>
       <Table striped bordered hover>
@@ -34,7 +35,9 @@ function UserStockTableContainer() {
           </tr>
         </thead>
         {stocks ? (
-          <UserStockTableBody stocks={sortedStocks ? sortedStocks : userStocks()} />
+          <UserStockTableBody
+            stocks={sortedStocks ? sortedStocks : userStocks()}
+          />
         ) : (
           <p>Loading..</p>
         )}

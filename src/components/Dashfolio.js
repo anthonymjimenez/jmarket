@@ -13,6 +13,7 @@ import { NavLink } from "react-router-dom";
 function Dashfolio() {
   let { stocks, user } = useAuth();
 
+  // consider adding to utils
   let togTags = extractShuffle(findPopularTags(stocks), 5);
   let popularStocks = extractShuffle(findPopularStocks(stocks), 7);
   let upComingStocks = extractShuffle(findUpComingStocks(stocks), 7);

@@ -21,7 +21,10 @@ function TagStockTableBody({ stocks }) {
           </td>
           <td>{stock.symbol}</td>
           <td>{stock.latestPrice}</td>
-          <td>{stock.dailyChangePercent * 100 > 0 ? <>&#8593;</> : <>	&#8595;</> } { Math.abs(financial(stock.dailyChangePercent * 100))}% </td>
+          <td>
+            {stock.dailyChangePercent * 100 > 0 ? <>&#8593;</> : <> &#8595;</>}{" "}
+            {Math.abs(financial(stock.dailyChangePercent * 100))}%{" "}
+          </td>
           <td>{stock.marketCap}</td>
         </tr>
       ))}

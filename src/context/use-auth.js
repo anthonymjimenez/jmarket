@@ -191,7 +191,6 @@ function useProvideAuth() {
         finalStocks[index].userData = s;
       });
 
-
       return finalStocks;
     } catch (err) {
       console.error(err);
@@ -266,7 +265,7 @@ function useProvideAuth() {
     stocks ? stocks.find((stock) => stock.symbol == sym) : false;
 
   const findUserStock = (sym) => {
-    let data = user?.user_owned_stocks?.find((stock) => stock.symbol == sym)
+    let data = user?.user_owned_stocks?.find((stock) => stock.symbol == sym);
     return data == undefined ? false : data;
   };
   // Subscribe to user on mount
