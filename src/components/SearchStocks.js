@@ -13,7 +13,7 @@ export default function SearchStock({ stocks }) {
       ? setSearchResults([])
       : searchTerm !== ""
       ? setSearchResults([
-          stocks
+          ...stocks
             .filter((s) =>
               s.symbol.toLowerCase().includes(searchTerm.toLowerCase())
             )
@@ -41,12 +41,16 @@ export default function SearchStock({ stocks }) {
         <Form.Check type={"radio"} checked={false} label={"Symbol"} /> */}
       </Form>
       <hr /> <br />
+      {console.log("SEARCH", search)}
       {search.map((stock) => (
-        <StockLink
-          name={stock.name}
-          symbol={stock.symbol}
-          userData={stock.userData}
-        />
+        <>
+          {console.log(stock)}
+          <StockLink
+            name={stock.name}
+            symbol={stock.symbol}
+            userData={stock.userData}
+          />
+        </>
       ))}
     </>
   );
