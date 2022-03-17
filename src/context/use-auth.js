@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useContext, createContext } from "react";
 import { post, deleteAction, put, url, checkResponse } from "../utils/GenUtils";
 import { findUserIndexes, findIndexById } from "../utils/UserUtils";
-
+import { useNavigate } from "react-router-dom";
 const authContext = createContext();
 
 // Provider component that wraps your app and makes auth object ...
@@ -10,7 +10,6 @@ const authContext = createContext();
 
 export function ProvideAuth({ children }) {
   const auth = useProvideAuth();
-
   return <authContext.Provider value={auth}>{children}</authContext.Provider>;
 }
 
@@ -27,6 +26,7 @@ export const useAuth = () => {
 function useProvideAuth() {
   const [user, setUser] = useState(false);
   const [stocks, setStocks] = useState(false);
+  const navigate = useNavigate();
 
   const signin = (state) => {
     console.log(state);
@@ -41,6 +41,7 @@ function useProvideAuth() {
         localStorage.setItem("id", data.id);
         setUser(data);
         fetchStocks(data).then(setStocks);
+        navigate("/dash");
       })
       .catch(console.error);
   };
@@ -58,6 +59,7 @@ function useProvideAuth() {
         localStorage.setItem("id", user.id);
         setUser(user);
         fetchStocks(user).then(setStocks);
+        navigate("/dash");
       })
       .catch(console.error);
   };
